@@ -64,7 +64,7 @@ class _CardPokemonWebState extends State<CardPokemonWeb> {
                             color: Theme.of(context).primaryColor)),
                   ),
                   Text(
-                    widget.cod,
+                    '#${widget.cod}',
                     style: GoogleFonts.nunito(
                         textStyle: TextStyle(
                             fontWeight: FontWeight.w600,

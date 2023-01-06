@@ -102,7 +102,13 @@ class PokemonService {
           e['height'] = resp.data['height'];
           e['weight'] = resp.data['weight'];
         }
+        /*
+       //simulate last page
+       if (resp.data['id'] == 50) {
+          pokemonModel.next = null;
+        }*/
       }
+
       return pokemonModel;
     } on DioError catch (e) {
       return Future.error('Ocorreu um erro.');

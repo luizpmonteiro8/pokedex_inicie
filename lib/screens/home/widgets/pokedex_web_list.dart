@@ -28,13 +28,13 @@ class _PokedexWebListState extends State<PokedexWebList> {
 
   //pokemon
   List pokemonList = [];
-  late PokemonModel pokemonModel;
+  PokemonModel pokemonModel = PokemonModel(results: []);
 
   @override
   void initState() {
     super.initState();
 
-    // widget.firstController.addListener(_scrollListener);
+    widget.firstController.addListener(_scrollListener);
     getPokemon();
   }
 
@@ -68,27 +68,29 @@ class _PokedexWebListState extends State<PokedexWebList> {
           setState(() {
             pokemonModel = value;
             pokemonList = value.results;
+            //prevent error
+            _isLoading = false;
           })
         });
   }
 
   morePokemon() async {
-    print('chamou');
     if (_isLoading == false) {
-      /*   await pokemonService.getMorePokemon(pokemonModel.next!).then((value) => {
+      await pokemonService.getMorePokemon(pokemonModel.next!).then((value) => {
             setState(() {
               pokemonModel = value;
               pokemonList.addAll(value.results);
               _isLoading = false;
             })
-          });*/
+          });
     }
   }
 
   _scrollListener() {
     var nextPageTrigger = 0.9 * widget.firstController.position.maxScrollExtent;
 
-    if (widget.firstController.position.pixels > nextPageTrigger) {
+    if (widget.firstController.position.pixels > nextPageTrigger &&
+        pokemonModel.next != null) {
       morePokemon();
       _isLoading = true;
     }
@@ -96,53 +98,58 @@ class _PokedexWebListState extends State<PokedexWebList> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          'Pokédexfff',
-          style: GoogleFonts.nunito(
-              textStyle: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 30,
-                  color: Theme.of(context).primaryColor)),
-        ),
-        const SizedBox(
-          height: 32,
-        ),
-        SizedBox(
-          width: 306,
-          child: Scrollbar(
-            child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: pokemonList.length + 1,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == pokemonList.length + 1) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (pokemonList.isNotEmpty) {
-                    return SizedBox(
-                      height: 271,
-                      width: 100,
-                      child: CardPokemonWeb(
-                          name: pokemonList[index]['name'],
-                          cod: pokemonList[index]['id'].toString(),
-                          type: pokemonList[index]['type'],
-                          height: pokemonList[index]['height'].toString(),
-                          weight: pokemonList[index]['weight'].toString(),
-                          backgroundColor: colorTypeBackGround(),
-                          setPokemonDetail: widget.setPokemonDetail,
-                          image: pokemonList[index]['image']),
-                    );
-                  } else {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                }),
+    return Padding(
+      padding: const EdgeInsets.only(left: 32, right: 32, bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            'Pokédex',
+            style: GoogleFonts.nunito(
+                textStyle: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 30,
+                    color: Theme.of(context).primaryColor)),
           ),
-        )
-      ],
+          const SizedBox(
+            height: 32,
+          ),
+          SizedBox(
+            width: 306,
+            child: Scrollbar(
+              child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: pokemonModel.next == null
+                      ? pokemonList.length
+                      : pokemonList.length + 1,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (index == pokemonList.length) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (pokemonList.isNotEmpty) {
+                      return SizedBox(
+                        height: 271,
+                        width: 100,
+                        child: CardPokemonWeb(
+                            name: pokemonList[index]['name'],
+                            cod: pokemonList[index]['id'].toString(),
+                            type: pokemonList[index]['type'],
+                            height: pokemonList[index]['height'].toString(),
+                            weight: pokemonList[index]['weight'].toString(),
+                            backgroundColor: colorTypeBackGround(),
+                            setPokemonDetail: widget.setPokemonDetail,
+                            image: pokemonList[index]['image']),
+                      );
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  }),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

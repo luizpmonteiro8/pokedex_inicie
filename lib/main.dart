@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:pokedex/environments.dart';
 import 'package:pokedex/screens/home/home_screen.dart';
+import 'package:pokedex/screens/start/start_screen.dart';
 
 void main() {
   EnvironmentConfig.environmentBuild = Environments.TEST;
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
         ),
         backgroundColor: Colors.white,
       ),
-      home: const HomeScreen(),
+      home: kIsWeb ? const HomeScreen() : const StartScreen(),
     );
   }
 }

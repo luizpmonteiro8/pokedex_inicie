@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pokedex/app/services/pokemon.services.dart';
+import 'package:pokedex/screens/detail/widgets/appbar_mobile.dart';
+import 'package:pokedex/widgets/customBottomNavigation.dart';
 
 class DetailMobile extends StatelessWidget {
   final PokemonService pokemonService = PokemonService();
@@ -32,15 +34,20 @@ class DetailMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+      appBar: AppBarMobile(appBar: AppBar()),
+      bottomNavigationBar: const CustomBottomNavigation(),
       body: SingleChildScrollView(
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                 color: const Color(0xFFF1B0B3).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
+              alignment: Alignment.topCenter,
               child: Image.network(
                 image,
                 fit: BoxFit.contain,
@@ -49,7 +56,7 @@ class DetailMobile extends StatelessWidget {
             height: 11,
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
+            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(
@@ -140,6 +147,9 @@ class DetailMobile extends StatelessWidget {
                       return const Center(child: CircularProgressIndicator());
                     }
                   }),
+              const SizedBox(
+                height: 15,
+              ),
               FutureBuilder<Map<String, Object>>(
                   future: getLifeDefenseAttackSpeed(),
                   builder: (context, snapshot) {
@@ -159,7 +169,7 @@ class DetailMobile extends StatelessWidget {
                               const SizedBox(width: 63),
                               Slider(
                                 value: (snapshot.data!['hp'] as int).toDouble(),
-                                max: 100,
+                                max: 250,
                                 divisions: null,
                                 label: '',
                                 onChanged: (f) {},
@@ -181,7 +191,7 @@ class DetailMobile extends StatelessWidget {
                               Slider(
                                 value: (snapshot.data!['defense'] as int)
                                     .toDouble(),
-                                max: 100,
+                                max: 250,
                                 divisions: null,
                                 label: '',
                                 onChanged: (f) {},
@@ -205,7 +215,7 @@ class DetailMobile extends StatelessWidget {
                               Slider(
                                 value: (snapshot.data!['attack'] as int)
                                     .toDouble(),
-                                max: 100,
+                                max: 250,
                                 divisions: null,
                                 label: '',
                                 onChanged: (f) {},

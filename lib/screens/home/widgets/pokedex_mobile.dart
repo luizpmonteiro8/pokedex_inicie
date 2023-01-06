@@ -5,8 +5,11 @@ import 'package:pokedex/app/services/pokemon.services.dart';
 import 'package:pokedex/widgets/custom_card_pokemon_mobile.dart';
 
 class PokedexMobile extends StatefulWidget {
+  final ScrollController firstController;
+
   const PokedexMobile({
     super.key,
+    required this.firstController,
   });
 
   @override
@@ -21,14 +24,15 @@ class _PokedexMobileState extends State<PokedexMobile> {
 
   //pokemon
   List pokemonList = [];
-  late PokemonModel pokemonModel;
+  PokemonModel pokemonModel = PokemonModel(results: []);
 
   @override
   void initState() {
     super.initState();
 
     getPokemon();
-    // controllerSearch.addListener(_searchItem);
+
+    widget.firstController.addListener(_scrollListener);
   }
 
   colorTypeBackGround() {
@@ -56,6 +60,8 @@ class _PokedexMobileState extends State<PokedexMobile> {
           setState(() {
             pokemonModel = value;
             pokemonList = value.results;
+            //prevent error
+            _isLoading = false;
           })
         });
   }
@@ -72,50 +78,61 @@ class _PokedexMobileState extends State<PokedexMobile> {
     }
   }
 
+  _scrollListener() {
+    var nextPageTrigger = 0.9 * widget.firstController.position.maxScrollExtent;
+
+    if (widget.firstController.position.pixels > nextPageTrigger &&
+        pokemonModel.next != null) {
+      morePokemon();
+      _isLoading = true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Pokédex',
-          style: GoogleFonts.nunito(
-              textStyle: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                  color: Theme.of(context).primaryColor)),
-        ),
-        GridView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            itemCount: pokemonList.length + 1,
-            physics: const ScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              mainAxisExtent: 200,
-              childAspectRatio: 3 / 2,
-              crossAxisCount: 2,
-            ),
-            itemBuilder: (BuildContext context, int index) {
-              if (index == pokemonList.length) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (index == pokemonList.length - 3) {
-                morePokemon();
-                _isLoading = true;
-              }
+    return Padding(
+      padding: const EdgeInsets.only(left: 30, right: 17),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Pokédex',
+            style: GoogleFonts.nunito(
+                textStyle: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                    color: Theme.of(context).primaryColor)),
+          ),
+          GridView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: pokemonModel?.next == null
+                  ? pokemonList.length
+                  : pokemonList.length + 1,
+              physics: const ScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                mainAxisExtent: 160,
+                childAspectRatio: 3 / 2,
+                crossAxisCount: 2,
+              ),
+              itemBuilder: (BuildContext context, int index) {
+                if (index == pokemonList.length) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-              if (pokemonList.isNotEmpty) {
-                return CardPokemonMobile(
-                    name: pokemonList[index]['name'],
-                    cod: pokemonList[index]['id'].toString(),
-                    type: pokemonList[index]['type'],
-                    backgroundColor: colorTypeBackGround(),
-                    image: pokemonList[index]['image']);
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            })
-      ],
+                if (pokemonList.isNotEmpty) {
+                  return CardPokemonMobile(
+                      name: pokemonList[index]['name'],
+                      cod: pokemonList[index]['id'].toString(),
+                      type: pokemonList[index]['type'],
+                      backgroundColor: colorTypeBackGround(),
+                      image: pokemonList[index]['image']);
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              })
+        ],
+      ),
     );
   }
 }

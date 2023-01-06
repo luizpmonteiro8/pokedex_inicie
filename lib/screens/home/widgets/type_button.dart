@@ -39,38 +39,41 @@ class _TypeButtonState extends State<TypeButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Tipo',
-          style: GoogleFonts.nunito(
-              textStyle: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                  color: Theme.of(context).primaryColor)),
-        ),
-        SizedBox(
-          height: 30,
-          width: double.infinity,
-          child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: widget.typeList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Row(
-                  children: [
-                    ButtonType(
-                        name: widget.typeList[index]['name'],
-                        color: colorTypeBackGround()),
-                    const SizedBox(
-                      width: 10,
-                    )
-                  ],
-                );
-              }),
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 30),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Tipo',
+            style: GoogleFonts.nunito(
+                textStyle: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                    color: Theme.of(context).primaryColor)),
+          ),
+          SizedBox(
+            height: 30,
+            width: double.infinity,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                itemCount: widget.typeList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Row(
+                    children: [
+                      ButtonType(
+                          name: widget.typeList[index]['name'],
+                          color: colorTypeBackGround()),
+                      const SizedBox(
+                        width: 10,
+                      )
+                    ],
+                  );
+                }),
+          )
+        ],
+      ),
     );
   }
 }

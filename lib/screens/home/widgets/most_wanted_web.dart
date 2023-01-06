@@ -66,86 +66,94 @@ class _MostWantedWebState extends State<MostWantedWeb> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Mais procurados',
-          style: GoogleFonts.nunito(
-              textStyle: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 30,
-                  color: Theme.of(context).primaryColor)),
-        ),
-        const SizedBox(
-          height: 50,
-        ),
-        Stack(
-          children: [
-            SizedBox(
-              height: 271,
-              width: MediaQuery.of(context).size.width > 576
-                  ? double.infinity
-                  : 212,
-              child: Scrollbar(
-                child: ListView.builder(
-                    controller: _controller,
-                    itemCount: widget.mostWantedList.length,
-                    scrollDirection: Axis.horizontal,
-                    itemExtent: itemSize,
-                    physics: const BouncingScrollPhysics(),
-                    itemBuilder: (BuildContext context, int index) {
-                      if (widget.mostWantedList.isNotEmpty) {
-                        return SizedBox(
-                          width: 222,
-                          child: CardPokemonWeb(
-                              name: widget.mostWantedList[index]['name'],
-                              cod:
-                                  widget.mostWantedList[index]['id'].toString(),
-                              type: widget.mostWantedList[index]['type'],
-                              height: widget.mostWantedList[index]['height']
-                                  .toString(),
-                              weight: widget.mostWantedList[index]['weight']
-                                  .toString(),
-                              backgroundColor: colorTypeBackGround(),
-                              setPokemonDetail: widget.setPokemonDetail,
-                              image: widget.mostWantedList[index]['image']),
-                        );
-                      } else {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                    }),
+    return Padding(
+      padding: MediaQuery.of(context).size.width > 576
+          ? const EdgeInsets.only(left: 60, right: 60)
+          : const EdgeInsets.only(left: 32, right: 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Mais procurados',
+            style: GoogleFonts.nunito(
+                textStyle: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 30,
+                    color: Theme.of(context).primaryColor)),
+          ),
+          const SizedBox(
+            height: 50,
+          ),
+          Stack(
+            children: [
+              SizedBox(
+                height: 271,
+                width: MediaQuery.of(context).size.width > 576
+                    ? double.infinity
+                    : 212,
+                child: Scrollbar(
+                  child: ListView.builder(
+                      controller: _controller,
+                      itemCount: widget.mostWantedList.length,
+                      scrollDirection: Axis.horizontal,
+                      itemExtent: itemSize,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        if (widget.mostWantedList.isNotEmpty) {
+                          return SizedBox(
+                            width: 222,
+                            child: CardPokemonWeb(
+                                name: widget.mostWantedList[index]['name'],
+                                cod: widget.mostWantedList[index]['id']
+                                    .toString(),
+                                type: widget.mostWantedList[index]['type'],
+                                height: widget.mostWantedList[index]['height']
+                                    .toString(),
+                                weight: widget.mostWantedList[index]['weight']
+                                    .toString(),
+                                backgroundColor: colorTypeBackGround(),
+                                setPokemonDetail: widget.setPokemonDetail,
+                                image: widget.mostWantedList[index]['image']),
+                          );
+                        } else {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      }),
+                ),
               ),
-            ),
-            Positioned(
-              top: 135,
-              left: -10,
-              child: ElevatedButton(
-                  style: ButtonStyle(
-                      alignment: Alignment.center,
-                      fixedSize: MaterialStateProperty.all(const Size(15, 15)),
-                      shape: MaterialStateProperty.all(const CircleBorder()),
-                      backgroundColor: MaterialStateProperty.all(
-                          Theme.of(context).colorScheme.secondary)),
-                  onPressed: _moveUp,
-                  child: const Icon(Icons.arrow_back_ios_new)),
-            ),
-            Positioned(
-              top: 135,
-              right: -10,
-              child: ElevatedButton(
-                  style: ButtonStyle(
-                      alignment: Alignment.center,
-                      fixedSize: MaterialStateProperty.all(const Size(15, 15)),
-                      shape: MaterialStateProperty.all(const CircleBorder()),
-                      backgroundColor: MaterialStateProperty.all(
-                          Theme.of(context).colorScheme.secondary)),
-                  onPressed: _moveDown,
-                  child: const Icon(Icons.arrow_forward_ios)),
-            )
-          ],
-        ),
-      ],
+              Positioned(
+                top: 135,
+                left: -10,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                        alignment: Alignment.center,
+                        fixedSize:
+                            MaterialStateProperty.all(const Size(15, 15)),
+                        shape: MaterialStateProperty.all(const CircleBorder()),
+                        backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).colorScheme.secondary)),
+                    onPressed: _moveUp,
+                    child: const Icon(Icons.arrow_back_ios_new)),
+              ),
+              Positioned(
+                top: 135,
+                right: -10,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                        alignment: Alignment.center,
+                        fixedSize:
+                            MaterialStateProperty.all(const Size(15, 15)),
+                        shape: MaterialStateProperty.all(const CircleBorder()),
+                        backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).colorScheme.secondary)),
+                    onPressed: _moveDown,
+                    child: const Icon(Icons.arrow_forward_ios)),
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

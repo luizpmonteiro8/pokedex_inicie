@@ -36,40 +36,43 @@ class _MostWantedMobileState extends State<MostWantedMobile> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Mais procurados',
-          style: GoogleFonts.nunito(
-              textStyle: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                  color: Theme.of(context).primaryColor)),
-        ),
-        GridView.builder(
-            scrollDirection: Axis.vertical,
-            physics: const ScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: widget.mostWantedList.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              mainAxisExtent: 200,
-              childAspectRatio: 3 / 2,
-              crossAxisCount: 2,
-            ),
-            itemBuilder: (BuildContext context, int index) {
-              if (widget.mostWantedList.isNotEmpty) {
-                return CardPokemonMobile(
-                    name: widget.mostWantedList[index]['name'],
-                    cod: widget.mostWantedList[index]['id'].toString(),
-                    type: widget.mostWantedList[index]['type'],
-                    backgroundColor: colorTypeBackGround(),
-                    image: widget.mostWantedList[index]['image']);
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            }),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 30, right: 17),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Mais procurados',
+            style: GoogleFonts.nunito(
+                textStyle: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                    color: Theme.of(context).primaryColor)),
+          ),
+          GridView.builder(
+              scrollDirection: Axis.vertical,
+              physics: const ScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: widget.mostWantedList.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                mainAxisExtent: 160,
+                childAspectRatio: 3 / 2,
+                crossAxisCount: 2,
+              ),
+              itemBuilder: (BuildContext context, int index) {
+                if (widget.mostWantedList.isNotEmpty) {
+                  return CardPokemonMobile(
+                      name: widget.mostWantedList[index]['name'],
+                      cod: widget.mostWantedList[index]['id'].toString(),
+                      type: widget.mostWantedList[index]['type'],
+                      backgroundColor: colorTypeBackGround(),
+                      image: widget.mostWantedList[index]['image']);
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              }),
+        ],
+      ),
     );
   }
 }

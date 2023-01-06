@@ -23,7 +23,7 @@ class _PokedexWebGridState extends State<PokedexWebGrid> {
 
   //pokemon
   List pokemonList = [];
-  late PokemonModel pokemonModel;
+  PokemonModel pokemonModel = PokemonModel(results: []);
 
   late ScrollController _controller;
 
@@ -73,12 +73,12 @@ class _PokedexWebGridState extends State<PokedexWebGrid> {
   }
 
   morePokemon() async {
-    /*   await pokemonService.getMorePokemon(pokemonModel.next!).then((value) => {
+    await pokemonService.getMorePokemon(pokemonModel.next!).then((value) => {
           setState(() {
             pokemonModel = value;
             pokemonList.addAll(value.results);
           })
-        });*/
+        });
   }
 
   _moveUp() {
@@ -93,91 +93,99 @@ class _PokedexWebGridState extends State<PokedexWebGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Padding(
+        padding: const EdgeInsets.only(left: 60, right: 60, bottom: 90),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Pokédex',
-              style: GoogleFonts.nunito(
-                  textStyle: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 30,
-                      color: Theme.of(context).primaryColor)),
-            ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton(
-                    style: ButtonStyle(
-                        alignment: Alignment.center,
-                        fixedSize:
-                            MaterialStateProperty.all(const Size(15, 15)),
-                        shape: MaterialStateProperty.all(const CircleBorder()),
-                        backgroundColor: MaterialStateProperty.all(
-                            Theme.of(context).colorScheme.secondary)),
-                    onPressed: _moveUp,
-                    child: const Icon(Icons.arrow_back_ios_new)),
-                ElevatedButton(
-                    style: ButtonStyle(
-                        alignment: Alignment.center,
-                        fixedSize:
-                            MaterialStateProperty.all(const Size(15, 15)),
-                        shape: MaterialStateProperty.all(const CircleBorder()),
-                        backgroundColor: MaterialStateProperty.all(
-                            Theme.of(context).colorScheme.secondary)),
-                    onPressed: _moveDown,
-                    child: const Icon(Icons.arrow_forward_ios))
+                Text(
+                  'Pokédex',
+                  style: GoogleFonts.nunito(
+                      textStyle: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 30,
+                          color: Theme.of(context).primaryColor)),
+                ),
+                Row(
+                  children: [
+                    ElevatedButton(
+                        style: ButtonStyle(
+                            alignment: Alignment.center,
+                            fixedSize:
+                                MaterialStateProperty.all(const Size(15, 15)),
+                            shape:
+                                MaterialStateProperty.all(const CircleBorder()),
+                            backgroundColor: MaterialStateProperty.all(
+                                Theme.of(context).colorScheme.secondary)),
+                        onPressed: _moveUp,
+                        child: const Icon(Icons.arrow_back_ios_new)),
+                    ElevatedButton(
+                        style: ButtonStyle(
+                            alignment: Alignment.center,
+                            fixedSize:
+                                MaterialStateProperty.all(const Size(15, 15)),
+                            shape:
+                                MaterialStateProperty.all(const CircleBorder()),
+                            backgroundColor: MaterialStateProperty.all(
+                                Theme.of(context).colorScheme.secondary)),
+                        onPressed: _moveDown,
+                        child: const Icon(Icons.arrow_forward_ios))
+                  ],
+                )
               ],
+            ),
+            const SizedBox(
+              height: 32,
+            ),
+            SizedBox(
+              height: 565,
+              width: double.infinity,
+              child: Scrollbar(
+                child: GridView.builder(
+                    controller: _controller,
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: pokemonModel.next == null
+                        ? pokemonList.length
+                        : pokemonList.length + 1,
+                    physics: const ScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      mainAxisExtent: 222,
+                      crossAxisCount: 2,
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      if (index == pokemonList.length) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (index == pokemonList.length - 3 &&
+                          pokemonModel.next != null) {
+                        morePokemon();
+                      }
+
+                      if (pokemonList.isNotEmpty) {
+                        return SizedBox(
+                          width: 222,
+                          child: CardPokemonWeb(
+                              name: pokemonList[index]['name'],
+                              cod: pokemonList[index]['id'].toString(),
+                              type: pokemonList[index]['type'],
+                              height: pokemonList[index]['height'].toString(),
+                              weight: pokemonList[index]['weight'].toString(),
+                              backgroundColor: colorTypeBackGround(),
+                              setPokemonDetail: widget.setPokemonDetail,
+                              image: pokemonList[index]['image']),
+                        );
+                      } else {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    }),
+              ),
             )
           ],
-        ),
-        const SizedBox(
-          height: 32,
-        ),
-        SizedBox(
-          height: 565,
-          width: double.infinity,
-          child: Scrollbar(
-            child: GridView.builder(
-                controller: _controller,
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                itemCount: pokemonList.length + 1,
-                physics: const ScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  mainAxisExtent: 222,
-                  crossAxisCount: 2,
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == pokemonList.length) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  /* if (index == pokemonList.length - 3) {
-                morePokemon();
-              }*/
-
-                  if (pokemonList.isNotEmpty) {
-                    return SizedBox(
-                      width: 222,
-                      child: CardPokemonWeb(
-                          name: pokemonList[index]['name'],
-                          cod: pokemonList[index]['id'].toString(),
-                          type: pokemonList[index]['type'],
-                          height: pokemonList[index]['height'].toString(),
-                          weight: pokemonList[index]['weight'].toString(),
-                          backgroundColor: colorTypeBackGround(),
-                          setPokemonDetail: widget.setPokemonDetail,
-                          image: pokemonList[index]['image']),
-                    );
-                  } else {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                }),
-          ),
-        )
-      ],
-    );
+        ));
   }
 }

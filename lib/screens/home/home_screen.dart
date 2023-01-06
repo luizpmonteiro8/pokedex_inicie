@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:pokedex/app/models/pokemon.dart';
 import 'package:pokedex/app/models/pokemon_detail.dart';
 import 'package:pokedex/app/services/pokemon.services.dart';
 import 'package:pokedex/app/services/type.services.dart';
 import 'package:pokedex/screens/detail/detail_web.dart';
+import 'package:pokedex/screens/home/widgets/appbar_mobile.dart';
 import 'package:pokedex/screens/home/widgets/header_mobile.dart';
 import 'package:pokedex/screens/home/widgets/header_web.dart';
 import 'package:pokedex/screens/home/widgets/most_wanted_mobile.dart';
@@ -13,6 +13,7 @@ import 'package:pokedex/screens/home/widgets/pokedex_mobile.dart';
 import 'package:pokedex/screens/home/widgets/pokedex_web_grid.dart';
 import 'package:pokedex/screens/home/widgets/pokedex_web_list.dart';
 import 'package:pokedex/screens/home/widgets/type_button.dart';
+import 'package:pokedex/widgets/customBottomNavigation.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -30,10 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
   List mostWantedList = [];
   //pokemon
   List pokemonList = [];
-  late PokemonModel pokemonModel;
 
   //pokemon detail
   PokemonDetail? pokemonDetailWeb;
+
+  //open detail screen in web version
   bool showDetail = false;
 
   TypeService typeService = TypeService();
@@ -50,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     getType();
     getPokemonMostWanted();
-    // controllerSearch.addListener(_searchItem);
+    _scrollController = ScrollController(initialScrollOffset: 50);
   }
 
   @override
@@ -100,108 +102,95 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      backgroundColor:
-          showDetail ? Colors.black.withOpacity(0.3) : Colors.white,
-      resizeToAvoidBottomInset: false,
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        padding: MediaQuery.of(context).size.width > 576
-            ? const EdgeInsets.only(left: 60, right: 60, top: 15, bottom: 98)
-            : const EdgeInsets.only(left: 32, right: 0, top: 10, bottom: 98),
-        scrollDirection: Axis.vertical,
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                Offstage(
-                    offstage: !kIsWeb,
-                    child: HeaderWeb(
-                      controllerSearch: controllerSearch,
-                      setPokemonDetail: setPokemonDetailWeb,
-                    )),
-                Offstage(
-                    offstage: kIsWeb,
-                    child: HeaderMobile(
-                      controllerSearch: controllerSearch,
-                    )),
-                Offstage(
-                    offstage: kIsWeb,
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        TypeButton(
-                          typeList: typeList,
-                        ),
-                      ],
-                    )),
-                const SizedBox(
-                  height: 32,
-                ),
-                Offstage(
-                  offstage: !kIsWeb,
-                  child: MostWantedWeb(
-                    mostWantedList: mostWantedList,
-                    setPokemonDetail: setPokemonDetailWeb,
+            backgroundColor: showDetail
+                ? Colors.black.withOpacity(0.3)
+                : Colors.white.withOpacity(0.95),
+            appBar: !kIsWeb ? AppBarMobile(appBar: AppBar()) : null,
+            bottomNavigationBar:
+                !kIsWeb ? const CustomBottomNavigation() : null,
+            body: SingleChildScrollView(
+              controller: _scrollController,
+              scrollDirection: Axis.vertical,
+              child: Stack(
+                children: [
+                  kIsWeb == true
+                      ? Column(children: [
+                          //web
+                          HeaderWeb(
+                            controllerSearch: controllerSearch,
+                            setPokemonDetail: setPokemonDetailWeb,
+                          ),
+                          const SizedBox(
+                            height: 32,
+                          ),
+                          MostWantedWeb(
+                            mostWantedList: mostWantedList,
+                            setPokemonDetail: setPokemonDetailWeb,
+                          ),
+                          const SizedBox(
+                            height: 32,
+                          ),
+                          MediaQuery.of(context).size.width > 576
+                              ? PokedexWebGrid(
+                                  setPokemonDetail: setPokemonDetailWeb,
+                                )
+                              : PokedexWebList(
+                                  firstController: _scrollController,
+                                  setPokemonDetail: setPokemonDetailWeb,
+                                ),
+                        ])
+                      : Column(children: [
+                          //not web
+                          HeaderMobile(
+                            controllerSearch: controllerSearch,
+                          ),
+                          const SizedBox(
+                            height: 19,
+                          ),
+                          TypeButton(typeList: typeList),
+                          const SizedBox(
+                            height: 32,
+                          ),
+                          MostWantedMobile(mostWantedList: mostWantedList),
+                          const SizedBox(
+                            height: 32,
+                          ),
+                          PokedexMobile(
+                            firstController: _scrollController,
+                          )
+                        ]),
+                  Offstage(
+                    offstage: !showDetail,
+                    child: InkWell(
+                      onTap: () => closeDetailWeb(),
+                      child: Container(
+                        color: Colors.black.withOpacity(0.3),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 1.6,
+                      ),
+                    ),
                   ),
-                ),
-                Offstage(
-                  offstage: kIsWeb,
-                  child: MostWantedMobile(mostWantedList: mostWantedList),
-                ),
-                const SizedBox(
-                  height: 32,
-                ),
-                Offstage(
-                  offstage: !kIsWeb,
-                  child: MediaQuery.of(context).size.width > 576
-                      ? PokedexWebGrid(
-                          setPokemonDetail: setPokemonDetailWeb,
-                        )
-                      : PokedexWebList(
-                          firstController: _scrollController,
-                          setPokemonDetail: setPokemonDetailWeb,
-                        ),
-                ),
-                const Offstage(
-                  offstage: kIsWeb,
-                  child: PokedexMobile(),
-                ),
-              ],
-            ),
-            Offstage(
-              offstage: !showDetail,
-              child: InkWell(
-                onTap: () => closeDetailWeb(),
-                child: Container(
-                  color: Colors.black.withOpacity(0.3),
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 1.6,
-                ),
+                  Positioned(
+                      right: 0,
+                      child: Container(
+                        color: Colors.white,
+                        width: showDetail
+                            ? MediaQuery.of(context).size.width > 650
+                                ? 532
+                                : MediaQuery.of(context).size.width * 0.99
+                            : 0,
+                        height: showDetail
+                            ? MediaQuery.of(context).size.height * 1.6
+                            : 0,
+                        child: pokemonDetailWeb != null && showDetail == true
+                            ? DetailWeb(
+                                pokemonDetail: pokemonDetailWeb!,
+                                closeDetail: closeDetailWeb,
+                              )
+                            : null,
+                      ))
+                ],
               ),
-            ),
-            Positioned(
-                right: 0,
-                child: Container(
-                  color: Colors.white,
-                  width: showDetail
-                      ? MediaQuery.of(context).size.width > 576
-                          ? 532
-                          : 320
-                      : 0,
-                  height:
-                      showDetail ? MediaQuery.of(context).size.height * 1.6 : 0,
-                  child: pokemonDetailWeb != null && showDetail == true
-                      ? DetailWeb(
-                          pokemonDetail: pokemonDetailWeb!,
-                          closeDetail: closeDetailWeb,
-                        )
-                      : null,
-                ))
-          ],
-        ),
-      ),
-    ));
+            )));
   }
 }
