@@ -2,21 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pokedex/app/models/pokemon.dart';
 import 'package:pokedex/app/services/pokemon.services.dart';
-import 'package:pokedex/widgets/custom_card_pokemon.dart';
+import 'package:pokedex/widgets/custom_card_pokemon_mobile.dart';
 
-class Pokedex extends StatefulWidget {
-  const Pokedex({
+class PokedexMobile extends StatefulWidget {
+  const PokedexMobile({
     super.key,
   });
 
   @override
-  State<Pokedex> createState() => _PokedexState();
+  State<PokedexMobile> createState() => _PokedexMobileState();
 }
 
-class _PokedexState extends State<Pokedex> {
+class _PokedexMobileState extends State<PokedexMobile> {
   PokemonService pokemonService = PokemonService();
 
   int randomColorPokedex = 0;
+  bool _isLoading = false;
 
   //pokemon
   List pokemonList = [];
@@ -60,12 +61,15 @@ class _PokedexState extends State<Pokedex> {
   }
 
   morePokemon() async {
-    await pokemonService.getMorePokemon(pokemonModel.next!).then((value) => {
-          setState(() {
-            pokemonModel = value;
-            pokemonList.addAll(value.results);
-          })
-        });
+    if (_isLoading == false) {
+      await pokemonService.getMorePokemon(pokemonModel.next!).then((value) => {
+            setState(() {
+              pokemonModel = value;
+              pokemonList.addAll(value.results);
+              _isLoading = false;
+            })
+          });
+    }
   }
 
   @override
@@ -95,12 +99,13 @@ class _PokedexState extends State<Pokedex> {
               if (index == pokemonList.length) {
                 return const Center(child: CircularProgressIndicator());
               }
-              /* if (index == pokemonList.length - 3) {
+              if (index == pokemonList.length - 3) {
                 morePokemon();
-              }*/
+                _isLoading = true;
+              }
 
               if (pokemonList.isNotEmpty) {
-                return CardPokemon(
+                return CardPokemonMobile(
                     name: pokemonList[index]['name'],
                     cod: pokemonList[index]['id'].toString(),
                     type: pokemonList[index]['type'],

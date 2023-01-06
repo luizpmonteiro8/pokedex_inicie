@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pokedex/app/services/pokemon.services.dart';
 
-class Detail extends StatelessWidget {
+class DetailMobile extends StatelessWidget {
   final PokemonService pokemonService = PokemonService();
 
   final String name;
@@ -11,7 +11,7 @@ class Detail extends StatelessWidget {
   final String image;
   final Color backgroundColor;
 
-  Detail({
+  DetailMobile({
     super.key,
     required this.name,
     required this.cod,
@@ -24,8 +24,8 @@ class Detail extends StatelessWidget {
     return await pokemonService.getDescription(cod);
   }
 
-  Future<Map<String, Object>> getLifeDefenseAttack() async {
-    return await pokemonService.getLifeDefenseAttack(cod);
+  Future<Map<String, Object>> getLifeDefenseAttackSpeed() async {
+    return await pokemonService.getLifeDefenseAttackSpeed(cod);
   }
 
   @override
@@ -141,7 +141,7 @@ class Detail extends StatelessWidget {
                     }
                   }),
               FutureBuilder<Map<String, Object>>(
-                  future: getLifeDefenseAttack(),
+                  future: getLifeDefenseAttackSpeed(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return Column(

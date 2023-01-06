@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pokedex/app/services/pokemon.services.dart';
-import 'package:pokedex/screens/detail/detail.dart';
+import 'package:pokedex/screens/detail/detail_mobile.dart';
 
 class HeaderMobile extends StatelessWidget {
   final TextEditingController controllerSearch;
@@ -17,7 +17,7 @@ class HeaderMobile extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Detail(
+                      builder: (context) => DetailMobile(
                             name: capitalize(value['name'].toString()),
                             cod: value['cod'].toString(),
                             image: value['image'].toString(),

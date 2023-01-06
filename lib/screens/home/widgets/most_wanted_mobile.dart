@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pokedex/widgets/custom_card_pokemon.dart';
+import 'package:pokedex/widgets/custom_card_pokemon_mobile.dart';
 
-class MostWanted extends StatefulWidget {
+class MostWantedMobile extends StatefulWidget {
   final List mostWantedList;
 
-  const MostWanted({super.key, required this.mostWantedList});
+  const MostWantedMobile({super.key, required this.mostWantedList});
 
   @override
-  State<MostWanted> createState() => _MostWantedState();
+  State<MostWantedMobile> createState() => _MostWantedMobileState();
 }
 
-class _MostWantedState extends State<MostWanted> {
+class _MostWantedMobileState extends State<MostWantedMobile> {
   int randomColorMost = 0;
 
   colorTypeBackGround() {
@@ -59,7 +59,7 @@ class _MostWantedState extends State<MostWanted> {
             ),
             itemBuilder: (BuildContext context, int index) {
               if (widget.mostWantedList.isNotEmpty) {
-                return CardPokemon(
+                return CardPokemonMobile(
                     name: widget.mostWantedList[index]['name'],
                     cod: widget.mostWantedList[index]['id'].toString(),
                     type: widget.mostWantedList[index]['type'],

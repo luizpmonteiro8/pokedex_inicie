@@ -25,6 +25,8 @@ class PokemonService {
           e['type'] = resp.data['types'][0]['type']['name'];
           e['id'] = resp.data['id'];
           e['image'] = resp.data['sprites']['other']['home']['front_default'];
+          e['height'] = resp.data['height'];
+          e['weight'] = resp.data['weight'];
         }
       }
       return pokemonModel;
@@ -48,7 +50,7 @@ class PokemonService {
     }
   }
 
-  Future<Map<String, Object>> getLifeDefenseAttack(String cod) async {
+  Future<Map<String, Object>> getLifeDefenseAttackSpeed(String cod) async {
     try {
       final response = await dio.get('$endPokemon/$cod');
 
@@ -56,6 +58,7 @@ class PokemonService {
         'hp': response.data['stats'][0]['base_stat'],
         'defense': response.data['stats'][2]['base_stat'],
         'attack': response.data['stats'][1]['base_stat'],
+        'speed': response.data['stats'][5]['base_stat'],
       };
     } on DioError catch (e) {
       return Future.error('Ocorreu um erro.');
@@ -74,6 +77,8 @@ class PokemonService {
           e['type'] = resp.data['types'][0]['type']['name'];
           e['id'] = resp.data['id'];
           e['image'] = resp.data['sprites']['other']['home']['front_default'];
+          e['height'] = resp.data['height'];
+          e['weight'] = resp.data['weight'];
         }
       }
       return pokemonModel;
@@ -94,6 +99,8 @@ class PokemonService {
           e['type'] = resp.data['types'][0]['type']['name'];
           e['id'] = resp.data['id'];
           e['image'] = resp.data['sprites']['other']['home']['front_default'];
+          e['height'] = resp.data['height'];
+          e['weight'] = resp.data['weight'];
         }
       }
       return pokemonModel;
@@ -115,6 +122,8 @@ class PokemonService {
         'cod': response.data["id"],
         'image': response.data['sprites']['other']['home']['front_default'],
         'type': response.data['types'][0]['type']['name'],
+        'height': response.data['height'],
+        'weight': response.data['weight'],
       };
     } on DioError catch (e) {
       throw ('Ocorreu um erro');

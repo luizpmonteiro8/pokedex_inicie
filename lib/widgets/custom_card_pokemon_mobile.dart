@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pokedex/screens/detail/detail.dart';
+import 'package:pokedex/screens/detail/detail_mobile.dart';
 import 'package:pokedex/widgets/custom_button_type.dart';
 
-class CardPokemon extends StatefulWidget {
+class CardPokemonMobile extends StatefulWidget {
   final String name;
   final String cod;
   final String type;
   final String image;
   final Color backgroundColor;
 
-  const CardPokemon({
+  const CardPokemonMobile({
     super.key,
     required this.name,
     required this.cod,
@@ -20,10 +20,10 @@ class CardPokemon extends StatefulWidget {
   });
 
   @override
-  State<CardPokemon> createState() => _CardPokemonState();
+  State<CardPokemonMobile> createState() => _CardPokemonMobileState();
 }
 
-class _CardPokemonState extends State<CardPokemon> {
+class _CardPokemonMobileState extends State<CardPokemonMobile> {
   String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
   @override
@@ -33,7 +33,7 @@ class _CardPokemonState extends State<CardPokemon> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => Detail(
+                  builder: (context) => DetailMobile(
                         name: capitalize(widget.name),
                         cod: widget.cod,
                         image: widget.image,
@@ -65,7 +65,14 @@ class _CardPokemonState extends State<CardPokemon> {
                   const SizedBox(
                     height: 4,
                   ),
-                  Text(widget.cod),
+                  Text(
+                    widget.cod,
+                    style: GoogleFonts.nunito(
+                        textStyle: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            color: Theme.of(context).primaryColor)),
+                  ),
                 ],
               ),
               Expanded(
